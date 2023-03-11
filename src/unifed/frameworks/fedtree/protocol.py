@@ -49,7 +49,6 @@ def run_server(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
         f.write(f"learning_rate={tree_param['learning_rate']}\n")
     os.system(
         f"./FedTree/build/bin/FedTree-distributed-server fedtree_server.conf")
-    print("after run fedtree server")
     
 @pop.handle("unifed.fedtree:client")
 @store_error(UNIFED_TASK_DIR)
