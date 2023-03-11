@@ -18,6 +18,7 @@ You should at least update the following 3 places:
   - Replace `unifed-example` with `unifed-<FRAMEWORK_NAME>`.
   - Replace all `colink-protocol-unifed-example` with `colink-protocol-unifed-<FRAMEWORK_NAME>`.
   - (Optional) Update the value of `description` to briefly describe your framework.
+  - (Optional) Update the value of `install_requires` for your framework.
 
 ## 3. Install the package in an editable mode
 
@@ -25,6 +26,10 @@ Make sure you have Python 3.7+ installed.
 ```bash
 pip install -e .
 ```
+
+## (For FedTree) Install the prerequirsites and build FedTree
+
+For FedTree, you need to install the prerequisites as shown [here](https://github.com/Xtra-Computing/FedTree#prerequisites). Then, you can install FedTree by ```sh install_fedtree.sh```.
 
 ## 4. Implement the protocol
 

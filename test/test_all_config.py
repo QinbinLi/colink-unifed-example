@@ -7,7 +7,7 @@ import colink as CL
 
 
 def simulate_with_config(config_file_path):
-    from unifed.frameworks.example.protocol import pop, UNIFED_TASK_DIR
+    from unifed.frameworks.fedtree.protocol import pop, UNIFED_TASK_DIR
     case_name = config_file_path.split("/")[-1].split(".")[0]
     with open(config_file_path, "r") as cf:
         config = json.load(cf)
@@ -22,7 +22,7 @@ def simulate_with_config(config_file_path):
         pop.run_attach(cl)
         participants.append(CL.Participant(user_id=cl.get_user_id(), role=role))
         cls.append(cl)
-    task_id = cls[0].run_task("unifed.example", json.dumps(config), participants, True)
+    task_id = cls[0].run_task("unifed.fedtree", json.dumps(config), participants, True)
     results = {}
     def G(key):
         r = cl.read_entry(f"{UNIFED_TASK_DIR}:{task_id}:{key}")

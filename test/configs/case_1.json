@@ -1,6 +1,6 @@
 {
     "framework": "fedtree",
-    "algorithm": "histsecagg",
+    "algorithm": "secureboost",
     "training": {
       "tree_param": {
         "max_depth": 6,
@@ -10,9 +10,8 @@
         "learning_rate": 1
       }
     },
-    "dataset": "breast_horizontal",
+    "dataset": "breast_vertical",
     "model": "gbdt_64_64_6",
-    "n_features": 30,
     "deployment": {
       "mode": "colink",
       "participants": [
@@ -25,7 +24,7 @@
           "client"
         ],
         [
-          "2",
+          "1",
           "client"
         ]
       ]
