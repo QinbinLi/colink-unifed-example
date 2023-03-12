@@ -5,6 +5,7 @@
  git submodule update
  mkdir build
  cd build
- cmake .. -DNTL_PATH="/home/qinbin/ntl/"
+ cmake ..
  make -j
  cd ../..
+ cp FedTree/build/bin/FedTree-distributed-* src/unifed/framework/fedtree

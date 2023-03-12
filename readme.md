@@ -27,9 +27,9 @@ Make sure you have Python 3.7+ installed.
 pip install -e .
 ```
 
-## (For FedTree) Install the prerequirsites and build FedTree
+## (Optional) Install the prerequirsites and build FedTree
 
-For FedTree, you need to install the prerequisites as shown [here](https://github.com/Xtra-Computing/FedTree#prerequisites). Then, you can install FedTree by ```sh install_fedtree.sh```.
+If the provided executable file `FedTree-distributed-party` and `FedTree-distributed-server` under `src/unifed/framework/fedtree` do not work properly due to the system capacity, you need to install FedTree manually. You first need to install the prerequisites as shown [here](https://github.com/Xtra-Computing/FedTree#prerequisites). Then, you can install FedTree by ```sh install_fedtree.sh```.
 
 ## 4. Implement the protocol
 

@@ -48,7 +48,7 @@ def run_server(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
         f.write(f"objective={tree_param['objective']}\n")
         f.write(f"learning_rate={tree_param['learning_rate']}\n")
     os.system(
-        f"./FedTree/build/bin/FedTree-distributed-server fedtree_server.conf")
+        f"./src/unifed/frameworks/fedtree/FedTree-distributed-server fedtree_server.conf")
     
 @pop.handle("unifed.fedtree:client")
 @store_error(UNIFED_TASK_DIR)
@@ -84,6 +84,6 @@ def run_client(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
         test_data_path = f"./data/{unifed_config['dataset']}"+"_test.csv"
         if os.path.isfile(f"{test_data_path}"):
             f.write(f"test_data={test_data_path}\n")
-    os.system("./FedTree/build/bin/FedTree-distributed-party fedtree_client" + str(user_id) + ".conf " + str(user_id-1))
+    os.system("./src/unifed/frameworks/fedtree/FedTree-distributed-party fedtree_client" + str(user_id) + ".conf " + str(user_id-1))
     #TODO: write logs
     cl.create_entry("task:{}:output".format(cl.get_task_id()), "finished")
