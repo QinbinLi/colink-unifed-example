@@ -12,7 +12,6 @@
     },
     "dataset": "breast_horizontal",
     "model": "gbdt_64_64_6",
-    "n_features": 30,
     "deployment": {
       "mode": "colink",
       "participants": [

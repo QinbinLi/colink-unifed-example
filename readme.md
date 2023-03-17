@@ -4,8 +4,8 @@
 
 To be updated:
 - [x] Update test
-- [ ] Termination
-- [ ] Shell output capturing
+- [x] Termination
+- [x] Shell output capturing
 - [ ] Model output specification
 - [ ] Ignore test output (to temp)
 - [ ] Accuracy check
