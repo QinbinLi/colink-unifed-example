@@ -1,6 +1,6 @@
 {
     "framework": "fedtree",
-    "algorithm": "secureboost",
+    "algorithm": "histsecagg",
     "training": {
       "tree_param": {
         "max_depth": 6,
@@ -10,21 +10,22 @@
         "learning_rate": 1
       }
     },
-    "dataset": "breast_vertical",
+    "dataset": "breast_horizontal",
     "model": "gbdt_64_64_6",
+    "n_features": 30,
     "deployment": {
       "mode": "colink",
       "participants": [
         [
-          "0",
+          "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
           "server"
         ],
         [
-          "1",
+          "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
           "client"
         ],
         [
-          "1",
+          "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
           "client"
         ]
       ]

@@ -1,3 +1,5 @@
+import sys
+import time
 import glob
 import json
 import pytest
@@ -56,9 +58,12 @@ def test_with_config(config_file_path):
 
 
 if __name__ == "__main__":
-    from pprint import pprint
-    import time
-    nw = time.time()
-    target_case = "test/configs/case_0.json"
-    print(json.dumps(simulate_with_config(target_case), indent=2))
-    print("Time elapsed:", time.time() - nw)
+    if len(sys.argv) <= 2:
+        target_cases = ["test/configs/histsecagg.json"]
+    else:
+        target_cases = [f"test/configs/{_}.json" for _ in sys.argv[2:]]
+    for target_case in target_cases:
+        print(f"Case {target_cases}")
+        nw = time.time()
+        print(json.dumps(simulate_with_config(target_case), indent=2))
+        print("Time elapsed:", time.time() - nw)
