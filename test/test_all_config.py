@@ -30,7 +30,10 @@ def simulate_with_config(config_file_path):
         r = cl.read_entry(f"{UNIFED_TASK_DIR}:{task_id}:{key}")
         if r is not None:
             if key == "log":
-                return [json.loads(l) for l in r.decode().split("\n") if l != ""]
+                try:
+                    return [json.loads(l) for l in r.decode().split("\n") if l != ""]
+                except Exception as e:
+                    return r.decode()
             return r.decode() if key != "return" else json.loads(r)
     for cl in cls:
         cl.wait_task(task_id)

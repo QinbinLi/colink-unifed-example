@@ -13,6 +13,15 @@ pop = CL.ProtocolOperator(__name__)
 UNIFED_TASK_DIR = "unifed:task"
 
 
+USE_FILE_LOGGING = False
+if USE_FILE_LOGGING:
+    logging.basicConfig(filename="temp.log",
+                        filemode='a',
+                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                        datefmt='%H:%M:%S',
+                        level=logging.DEBUG)
+
+
 def load_config_from_param_and_check(param: bytes):
     unifed_config = json.loads(param.decode())
     framework = unifed_config["framework"]
@@ -33,6 +42,7 @@ def convert_unifed_config_to_fedtree_config(unifed_config):  # note that for the
         "data_format": "csv",
         "objective": tree_param['objective'],
         "learning_rate": tree_param['learning_rate'],
+        "verbose": 1,
     }
     if unifed_config['algorithm'] == 'histsecagg':
         fedtree_config["mode"] = "horizontal"
@@ -52,10 +62,20 @@ def create_conf_file_content_from_fedtree_config(fedtree_config):
     return conf_file_content
 
 
+def filter_log_from_fedtree_output(output):
+    filtered_output = ""
+    for line in output.split("\n"):
+        line_json = json.dumps({"fedtree": line})  # TODO: convert log here
+        if ".cpp" in line:
+            filtered_output += f"{line_json}\n"
+    return filtered_output
+
+
 @pop.handle("unifed.fedtree:server")
 @store_error(UNIFED_TASK_DIR)
 @store_return(UNIFED_TASK_DIR)
 def run_server(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
+    logging.info(f"{cl.get_task_id()[:6]} - Server - Started")
     unifed_config = load_config_from_param_and_check(param)
     fedtree_config = convert_unifed_config_to_fedtree_config(unifed_config)
     if unifed_config['algorithm'] == 'secureboost':
@@ -70,23 +90,24 @@ def run_server(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
             temp_conf_file.name,
         ],
         stdout=subprocess.PIPE, 
-        stderr=subprocess.PIPE
+        stderr=subprocess.PIPE,
     )
     # make sure the server is started first before sharing IP
     server_ip = get_local_ip()
     cl.send_variable("server_ip", server_ip, [p for p in participants if p.role == "client"])
     # as soon as one client finishes, all clients should have finished
-    first_client_return_code = cl.recv_variable("client_finished", [p for p in participants if p.role == "client"][0])
+    first_client_return_code = cl.recv_variable("client_finished", [p for p in participants if p.role == "client"][0]).decode()
     process.kill()
-    log = "TODO: where to get log?"  # TODO: where to get log?
+    stdout, stderr = process.communicate()
+    log = filter_log_from_fedtree_output(stdout.decode() + stderr.decode())
     # TODO: store the model
     cl.create_entry(f"{UNIFED_TASK_DIR}:{cl.get_task_id()}:log", log)
     os.unlink(temp_conf_file.name)
     return json.dumps({
         "server_ip": server_ip,
-        "stdout": process.stdout.decode(),
-        "stderr": process.stderr.decode(),
-        "returncode": first_client_return_code,
+        "stdout": stdout.decode(),
+        "stderr": stderr.decode(),
+        "returncode": int(first_client_return_code),
     })
     
     
@@ -94,6 +115,7 @@ def run_server(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
 @store_error(UNIFED_TASK_DIR)
 @store_return(UNIFED_TASK_DIR)
 def run_client(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
+    logging.info(f"{cl.get_task_id()[:6]} - Client[(unknown)] - Started")
     server_in_list = [p for p in participants if p.role == "server"]
     assert len(server_in_list) == 1, f"There should be exactly one server, not {len(server_in_list)} servers ({server_in_list})."
     p_server = server_in_list[0]
@@ -102,9 +124,10 @@ def run_client(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
         for i, p in enumerate(participants):
             if p.role == "server":
                 passed_server += 1
-            if p == cl.get_participant():
+            if p.user_id == cl.get_user_id():
                 return i - passed_server
     client_id = get_client_id()
+    logging.info(f"{cl.get_task_id()[:6]} - Client[{client_id}] - Recognized")
 
     unifed_config = load_config_from_param_and_check(param)
     fedtree_config = convert_unifed_config_to_fedtree_config(unifed_config)
@@ -127,19 +150,20 @@ def run_client(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
             str(client_id),
         ],
         stdout=subprocess.PIPE, 
-        stderr=subprocess.PIPE
+        stderr=subprocess.PIPE,
     )
     stdout, stderr = process.communicate()
     returncode = process.returncode
+    logging.info(f"{cl.get_task_id()[:6]} - Client[{client_id}] - Subprocess finished with return code {returncode}")
     # as soon as one client finishes, all clients should have finished
     if client_id == 0:
         cl.send_variable("client_finished", returncode, server_in_list)
-    log = "TODO: where to get log?"  # TODO: where to get log?
+    log = filter_log_from_fedtree_output(stdout.decode() + stderr.decode())
     cl.create_entry(f"{UNIFED_TASK_DIR}:{cl.get_task_id()}:log", log)
     os.unlink(temp_conf_file.name)
     return json.dumps({
         "server_ip": server_ip,
-        "stdout": stdout,
-        "stderr": stderr,
+        "stdout": stdout.decode(),
+        "stderr": stderr.decode(),
         "returncode": returncode,
     })
