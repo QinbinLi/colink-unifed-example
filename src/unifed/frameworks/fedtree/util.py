@@ -1,5 +1,6 @@
 import os
 import tempfile
+import traceback
 from typing import List
 
 import colink as CL
@@ -22,7 +23,10 @@ def store_error(err_dir):
             try:
                 return f(cl, param, participants)
             except Exception as e:
-                cl.create_entry(f"{err_dir}:{cl.get_task_id()}:error", str(e))
+                cl.create_entry(f"{err_dir}:{cl.get_task_id()}:error", f"Error:\n- type: {type(e).__name__}\n- content: {str(e)}\n- traceback: {traceback.format_exc()}")
+                cl.create_entry(f"{err_dir}:{cl.get_task_id()}:error_type", type(e).__name__)
+                cl.create_entry(f"{err_dir}:{cl.get_task_id()}:error_content", str(e))
+                cl.create_entry(f"{err_dir}:{cl.get_task_id()}:error_traceback", traceback.format_exc())
         return new_f
     return store_error_dec
 
