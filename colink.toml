@@ -1,5 +1,5 @@
 [package]
-name = "unifed-fedtree"
+name = "unifed.fedtree"
 version = "0.0.0"
 keywords = ["federated learning", "machine learning"]
 description = "FedTree."

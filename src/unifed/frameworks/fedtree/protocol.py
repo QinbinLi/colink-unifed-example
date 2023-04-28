@@ -32,6 +32,23 @@ def load_config_from_param_and_check(param: bytes):
     return unifed_config
 
 
+DATASET_TO_OBJECTIVE = {
+    "breast_horizontal": 'binary:logistic',
+    "default_credit_horizontal": 'binary:logistic',
+    "give_credit_horizontal": 'binary:logistic',
+    "student_horizontal": 'reg:linear',
+    "vehicle_scale_horizontal": 'multi:softmax',
+    "breast_vertical": 'binary:logistic',
+    "motor_vertical": 'reg:linear',
+    "default_credit_vertical": 'binary:logistic',
+    "dvisits_vertical": 'reg:linear',
+    "give_credit_vertical": 'binary:logistic',
+    "student_vertical": 'reg:linear',
+    "vehicle_scale_vertical": 'multi:softmax',
+    "femnist": 'multi:softmax',
+}
+
+
 def convert_unifed_config_to_fedtree_config(unifed_config):  # note that for the target config, the "data" field is still missing
     tree_param = unifed_config['training']['tree_param']
     fedtree_config = {
@@ -40,8 +57,8 @@ def convert_unifed_config_to_fedtree_config(unifed_config):  # note that for the
         "depth": tree_param['max_depth'],
         "max_num_bin": tree_param['max_num_bin'],
         "data_format": "csv",
-        "objective": tree_param['objective'],
-        "learning_rate": tree_param['learning_rate'],
+        "objective": DATASET_TO_OBJECTIVE[unifed_config['dataset']],
+        "learning_rate": unifed_config['training']['learning_rate'],
         "verbose": 1,
     }
     if unifed_config['algorithm'] == 'histsecagg':

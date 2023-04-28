@@ -5,10 +5,9 @@
       "tree_param": {
         "max_depth": 6,
         "n_trees": 64,
-        "max_num_bin": 64,
-        "objective": "binary:logistic",
-        "learning_rate": 1
-      }
+        "max_num_bin": 64
+      },
+      "learning_rate": 1
     },
     "dataset": "breast_horizontal",
     "model": "gbdt_64_64_6",
