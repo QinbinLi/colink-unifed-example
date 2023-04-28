@@ -96,7 +96,7 @@ def run_server(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
     server_ip = get_local_ip()
     cl.send_variable("server_ip", server_ip, [p for p in participants if p.role == "client"])
     # as soon as one client finishes, all clients should have finished
-    first_client_return_code = cl.recv_variable("client_finished", [p for p in participants if p.role == "client"][0]).decode()
+    first_client_return_code = cl.recv_variable("client_finished", [p for p in participants if p.role == "client"][0])
     process.kill()
     stdout, stderr = process.communicate()
     log = filter_log_from_fedtree_output(stdout.decode() + stderr.decode())
@@ -107,7 +107,7 @@ def run_server(cl: CL.CoLink, param: bytes, participants: List[CL.Participant]):
         "server_ip": server_ip,
         "stdout": stdout.decode(),
         "stderr": stderr.decode(),
-        "returncode": int(first_client_return_code),
+        "returncode": CL.byte_to_int(first_client_return_code),
     })
     
     

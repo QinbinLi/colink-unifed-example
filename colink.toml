@@ -14,5 +14,5 @@ pip install .
 """
 entrypoint = """
 conda activate colink-protocol-unifed-fedtree
-unifed-fedtree
+unifed-fedtree > ./debug.txt 2>&1
 """
