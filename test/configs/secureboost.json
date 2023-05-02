@@ -14,18 +14,18 @@
     "deployment": {
       "mode": "colink",
       "participants": [
-        [
-          "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
-          "server"
-        ],
-        [
-          "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
-          "client"
-        ],
-        [
-          "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
-          "client"
-        ]
+        {
+          "user_id": "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
+          "role": "server"
+        },
+        {
+          "user_id": "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
+          "role": "client"
+        },
+        {
+          "user_id": "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
+          "role": "client"
+        }
       ]
     }
   }
