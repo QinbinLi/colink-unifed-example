@@ -1,0 +1,31 @@
+{
+    "framework": "fedtree",
+    "algorithm": "histsecagg",
+    "training": {
+      "tree_param": {
+        "max_depth": 6,
+        "n_trees": 64,
+        "max_num_bin": 64
+      },
+      "learning_rate": 1
+    },
+    "dataset": "breast_horizontal",
+    "model": "gbdt_64_64_6",
+    "deployment": {
+      "mode": "colink",
+      "participants": [
+        {
+          "user_id": "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
+          "role": "server"
+        },
+        {
+          "user_id": "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
+          "role": "client"
+        },
+        {
+          "user_id": "0236f00d8e378b20634c901acfe004f0f85f5cdd7fa6377dab79e093bc62eabf9c",
+          "role": "client"
+        }
+      ]
+    }
+  }

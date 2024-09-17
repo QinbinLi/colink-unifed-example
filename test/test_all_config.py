@@ -1,3 +1,5 @@
+import sys
+import time
 import glob
 import json
 import pytest
@@ -13,11 +15,11 @@ def simulate_with_config(config_file_path):
         config = json.load(cf)
     # use instant server for simulation
     ir = CL.InstantRegistry()
-    # TODO: confirm the format of `participants``
     config_participants = config["deployment"]["participants"]
     cls = []
     participants = []
-    for _, role in config_participants:  # given user_ids are omitted and we generate new ones here
+    for p in config_participants:  # given user_ids are omitted and we generate new ones here
+        role = p["role"]
         cl = CL.InstantServer().get_colink().switch_to_generated_user()
         pop.run_attach(cl)
         participants.append(CL.Participant(user_id=cl.get_user_id(), role=role))
@@ -28,7 +30,10 @@ def simulate_with_config(config_file_path):
         r = cl.read_entry(f"{UNIFED_TASK_DIR}:{task_id}:{key}")
         if r is not None:
             if key == "log":
-                return [json.loads(l) for l in r.decode().split("\n") if l != ""]
+                try:
+                    return [json.loads(l) for l in r.decode().split("\n") if l != ""]
+                except Exception as e:
+                    return r.decode()
             return r.decode() if key != "return" else json.loads(r)
     for cl in cls:
         cl.wait_task(task_id)
@@ -56,9 +61,12 @@ def test_with_config(config_file_path):
 
 
 if __name__ == "__main__":
-    from pprint import pprint
-    import time
-    nw = time.time()
-    target_case = "test/configs/case_0.json"
-    print(json.dumps(simulate_with_config(target_case), indent=2))
-    print("Time elapsed:", time.time() - nw)
+    if len(sys.argv) <= 2:
+        target_cases = ["test/configs/histsecagg.json"]
+    else:
+        target_cases = [f"test/configs/{_}.json" for _ in sys.argv[2:]]
+    for target_case in target_cases:
+        print(f"Case {target_cases}")
+        nw = time.time()
+        print(json.dumps(simulate_with_config(target_case), indent=2))
+        print("Time elapsed:", time.time() - nw)
